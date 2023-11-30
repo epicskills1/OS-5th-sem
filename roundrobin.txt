@@ -1,0 +1,71 @@
+#include <stdio.h>
+
+// Structure to represent a process
+struct Process {
+    int processId;
+    int burstTime;
+    int remainingBurstTime;
+};
+
+// Function to perform the Round Robin scheduling
+void roundRobin(struct Process processes[], int n, int timeQuantum) {
+    int currentTime = 0;
+
+    // Continue until all processes are completed
+    while (1) {
+        int allProcessesCompleted = 1;
+
+        // Iterate through each process
+        for (int i = 0; i < n; i++) {
+            // Check if the process has remaining burst time
+            if (processes[i].remainingBurstTime > 0) {
+                allProcessesCompleted = 0;
+
+                // Execute the process for the time quantum or its remaining burst time, whichever is smaller
+                int executeTime = (processes[i].remainingBurstTime < timeQuantum) ? processes[i].remainingBurstTime : timeQuantum;
+                processes[i].remainingBurstTime -= executeTime;
+                currentTime += executeTime;
+
+                // Display the execution
+                printf("Process %d executes from time %d to %d.\n", processes[i].processId, currentTime - executeTime, currentTime);
+
+                // Check if the process is completed
+                if (processes[i].remainingBurstTime == 0) {
+                    printf("Process %d completed.\n", processes[i].processId);
+                }
+            }
+        }
+
+        // If all processes are completed, exit the loop
+        if (allProcessesCompleted) {
+            break;
+        }
+    }
+}
+
+int main() {
+    int n, timeQuantum;
+
+    // Input the number of processes
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    struct Process processes[n];
+
+    // Input process details
+    for (int i = 0; i < n; i++) {
+        processes[i].processId = i + 1;
+        printf("Enter burst time for process %d: ", i + 1);
+        scanf("%d", &processes[i].burstTime);
+        processes[i].remainingBurstTime = processes[i].burstTime;
+    }
+
+    // Input time quantum
+    printf("Enter the time quantum: ");
+    scanf("%d", &timeQuantum);
+
+    // Perform Round Robin scheduling
+    roundRobin(processes, n, timeQuantum);
+
+    return 0;
+}

@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// Function to be executed by the thread
+void *threadFunction(void *arg) {
+    printf("Thread ID: %lu\n", pthread_self());  // Print thread ID
+    printf("Process ID: %d\n", getpid());  // Print process ID
+    return NULL;
+}
+
+int main() {
+    pthread_t tid;
+
+    // Create a thread
+    if (pthread_create(&tid, NULL, threadFunction, NULL) != 0) {
+        fprintf(stderr, "Thread creation failed\n");
+        return 1;
+    }
+
+    printf("Main Thread ID: %lu\n", pthread_self());  // Print main thread ID
+    printf("Process ID: %d\n", getpid());  // Print process ID
+
+    // Wait for the created thread to complete
+    pthread_join(tid, NULL);
+
+    return 0;
+}
